@@ -1,0 +1,97 @@
+input { font-weight: normal; }
+fieldset { border:1px solid #BDD1DE; padding: 10px; }
+legend { font-size: 14px; }
+textarea { border:1px solid #518800; color: #4d4d4d; background: #adc8da; font: 12px Arial; padding: 2px; }
+/* textarea:hover { border:1px solid #518800; color: #4d4d4d; background: #ebf6fd; font: 12px Arial; padding: 3px; } */
+
+/* FORM FIELDS: INPUTS */
+.ff, .cp {
+    border: 1px solid #518800;
+    background:#adc8da none repeat scroll 0%;
+    font-family:verdana,sans-serif;
+    font-size: 90%;
+    color: #4d4d4d;
+    padding: 3px;
+    }
+.fd {
+    border: 1px solid #518800;
+    background:#adc8da none repeat scroll 0%;
+    font-family:verdana,sans-serif;
+    font-size: 90%;
+    color: #4d4d4d;
+    padding: 3px;
+    text-align: center;
+    width: 330px;
+    height: 90px;
+    }
+.ff:hover, .ff:focus, .cp:hover, .cp:focus, .fd:hover, .fd:focus {
+    border: 1px solid #518800;
+    background: white none repeat scroll 0%; 
+    color: black;
+    }
+/* FORM FIELDS: BUTTONS */
+.fb {
+    background:#adc8da none repeat scroll 0%;
+    color: #4d4d4d;
+    font-weight: bold;
+    border: 1px solid #518800;
+    font-family:verdana,sans-serif;
+    font-size: 90%;
+    padding: 3px;
+    }
+.fb:hover { background: white; }    
+
+/* SEARCH BOX FONT, HOVER, FOCUS */
+#search #box{
+    border: 1px solid #518800;
+    background:#adc8da none repeat scroll 0%;
+    font-family:Arial, verdana,sans-serif;
+    font-size: 90%;
+    padding: 2px;
+    width: 97%;
+    }
+#search #box:hover, #search #box:focus {
+    border: 1px solid #518800;
+    background:#FFF none repeat scroll 0%;
+    }
+#search #btn {
+    background:#adc8da none repeat scroll 0%;
+    color: #404040;
+    font-size: 11px;
+    font-weight: bold;
+    border-color: #518800;
+    border-width: 1px;
+    border-style: solid;
+    width: 100%;
+    padding: 0px 3px 1px 3px;
+    }
+#search #btn:hover { background: white; color: black; }
+/* MESSAGE COMPOSE FORM */
+#fsel {
+    border: 1px solid #518800;
+    background:#adc8da none repeat scroll 0%;
+    color: #404040;
+    font-family:verdana,sans-serif;
+    font-size: 85%;
+    width: 200px;
+    padding: 1px;
+    }
+#fsel:hover, #fsel:focus, #lsel:hover, #lsel:focus {
+    border: 1px solid #518800;
+    background: white none repeat scroll 0%;
+    color: black; 
+    }
+/* LANGUAGE SELECT */
+#lsel {
+    border: 1px solid #518800;
+    background:#adc8da none repeat scroll 0%;
+    color: #404040;
+    font-family:verdana,sans-serif;
+    font-size: 85%;
+    width: 100%;
+    padding: 1px;
+    }
+
+/* COMMENTS */
+.comsubj { font-size: 140%; font-weight: bold; color: #00000A; }
+.comments { font-size: 100%; font-weight: bold;}

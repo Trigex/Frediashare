@@ -1,0 +1,5 @@
+.info { font-family: Arial, Trebuchet MS, Verdana, sans-serif; font-weight: bold; }
+.data { background-color: #4d4d4d; border: 0px solid #02354D; }
+.data tr td { background-color: #ffffff; font-size: 11px; font-family: Trebuchet MS,Verdana,Arial,sans-serif; }
+.bar1 { position: relative; text-align:left; height:25px; width: 400px; border:0px; background: #adc8da; }
+.bar2 { position: relative; text-align:left; height:25px; width:0%; background: url(../../images/top/thbg2.gif) repeat-x; }

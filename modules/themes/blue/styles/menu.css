@@ -1,0 +1,20 @@
+td#subnavm {
+    padding: 10px;
+    margin:0 auto;
+    background: #ebf6fd; /* bg color of the subnav menu */
+    color:#888888;
+    border-bottom: 1px solid #bdd1de;
+    }
+#subnav td { padding: 0px 10px;}
+
+#subnav a:link, #subnav a:visited {
+    color: #cf4c01;
+    FONT-SIZE: 11px; FONT-FAMILY: Arial, Verdana, arial, helvetica, serif;
+    font-weight: bold;
+    text-decoration: none;
+    }
+#subnav a:hover {
+    color: #518800;
+    font-weight: bold;
+    text-decoration: none;
+    }

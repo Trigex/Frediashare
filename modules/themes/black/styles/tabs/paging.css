@@ -1,0 +1,44 @@
+
+.virtualpage, .virtualpage2, .virtualpage3, .virtualpage4, .virtualpage5, .virtualpage6, virtualpage7, virtualpage8, virtualpage9, virtualpage10{
+/*hide the broken up pieces of contents until script is called. Remove if desired*/
+/* display: none; */
+}
+
+.paginationstyle{ /*Style for demo pagination divs*/
+/* width: 250px; */
+text-align: left;
+padding: 2px 0;
+margin: 10px 0;
+}
+
+.paginationstyle a{ /*Pagination links style*/
+padding: 0 5px;
+text-decoration: none;
+border: 1px solid #2f2f2f; 
+/* color: navy; */
+/* background-color: white; */
+}
+
+.paginationstyle a:hover, .paginationstyle a.selected{
+color: white;
+/* background-color: #FEE496; */
+}
+
+.paginationstyle a.imglinks{ /*Pagination Image links style (class="imglinks") */
+border: 0;
+padding: 0;
+}
+
+.paginationstyle a.imglinks img{
+vertical-align: bottom;
+border: 0;
+}
+
+.paginationstyle a.imglinks a:hover{
+background: none;
+}
+
+.paginationstyle .flatview a:hover, .paginationstyle .flatview a.selected{ /*Pagination div "flatview" links style*/
+color: white;
+/* background-color: white; */
+}

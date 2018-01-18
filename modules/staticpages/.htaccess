@@ -1,0 +1,4 @@
+#php_flag engine off
+<Files ~ "\.(php*|s?p?html|cgi|pl|py|asp|aspx)$">
+#deny from all
+</Files>

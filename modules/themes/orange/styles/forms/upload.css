@@ -1,0 +1,5 @@
+.info { font-family: Arial, Trebuchet MS, Verdana, sans-serif; font-weight: bold; }
+.data { background-color: #EFEFEF; border: 1px solid #ffbf97; }
+.data tr td { background-color: #EFEFEF; font-size: 11px; font-family: Trebuchet MS,Verdana,Arial,sans-serif; }
+.bar1 { background-color: #EFEFEF; position: relative; text-align:left; height:20px; width: 400px; border:1px solid #666666; }
+.bar2 { background-color: #FF6500; position: relative; text-align:left; height:20px; width:0%; }

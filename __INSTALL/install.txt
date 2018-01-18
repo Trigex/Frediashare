@@ -1,0 +1,110 @@
+/**************************************************************************************************
+| Software Name        : MediaShare - Audio, Image and Video Sharing Script
+| Software Author      : MediaShare Development Team
+| Website              : http://www.mediasharesuite.com
+| E-mail               : mediasharesuite@gmail.com
+|**************************************************************************************************
+|
+|**************************************************************************************************
+| This file is subject to the MediaShare End-User License Agreement, available online at:
+| http://www.mediasharesuite.com/products/mediashare/eula/
+| By using this software, you acknowledge having read this Agreement and agree to be bound thereby.
+|**************************************************************************************************
+| Copyright (c) 2007-2009 mediasharesuite.com. All rights reserved.
+|**************************************************************************************************/
+
+#####################################
+######## MediaShare v3.0.0 ##########
+#####################################
+
+ABOUT: MediaShare v3.0.0 Installation and Upgrade Instructions.
+
+##################################
+### INSTALLATION INSTRUCTIONS: ###
+##################################
+
+IMPORTANT: BEFORE installing, make sure you know your script license order number, THEN contact us via email ( office@mediasharesuite.com ) or Helpdesk ( http://helpdesk.mediasharesuite.com )
+	   to obtain your unique license key - this can be obtained only by contacting us and providing your valid script license order number _AND_ the domain name _OR_ IP address on which the script is 
+	   intended to run. If your order number checks out, we will immediately reply and let you know what your unique license key is. 
+
+IMPORTANT: If you are installing a NEW COPY of MediaShare v3.0, you must follow these steps:
+		1. Make sure your server meets all the requirements: http://www.mediasharesuite.com/products/mediashare/requirements/
+		2. Copy all the script files to the installation location on the server (except __INSTALL folder).
+		3. Create a database, add a username to it, and import the installation SQL file.
+		4. Edit configs/config.main.php and set your script license order number, your unique license key, and set the script access URL along with the MySQL connection settings.
+		   - NOTE: If you do not set the correct order number and license key, the script will never work.
+		5. Edit cgi-bin/ubr_upload.pl and set the path to match your server environment.
+		6. If the installation is in a sub-folder, edit .htaccess and set the folder name to the option RewriteBase /subfolder_name
+		7. Set the following permissions on the following files/folders:
+		    - folder(s): "administration/fckeditor/uploaded_files" - 0777
+		    - folder(s): "media/cache/templates_c" - 0777
+		    - folder(s): "media/files_audio" - 0777
+		    - folder(s): "media/files_flashplayer/ads" - 0777
+		    - folder(s): "media/files_flashplayer/wms" - 0777
+		    - folder(s): "media/files_flashplayer/wms_audio" - 0777
+		    - folder(s): "media/files_flv" - 0777
+		    - folder(s): "media/files_image" - 0777
+		    - folder(s): "media/files_thumbnails" - 0777
+		    - folder(s): "media/files_user_bgimages" - 0777
+		    - folder(s): "media/files_video" - 0777
+		    - folder(s): "modules/languages" - 0777
+		    - folder(s): "modules/staticpages" - 0777
+		    - folder(s): "modules/wordfiltering" - 0777
+		    - folder(s): "templates/ads" - 0777
+		    - folder(s): "templates/emails" - 0777
+		    - folder(s): "templates/static" - 0777
+		    - folder(s): "cgi-bin" and all files in it - 0755
+		    - file(s): all files in "modules/staticpages" - 0666 (except .htaccess)
+		    - file(s): all files in "modules/wordfiltering" - 0666 (except .htaccess)
+		    - file(s): "modules/languages/english.php" - 0666 (if there are other language files, set the permissions for those as well)
+		    - file(s): all files in "templates/ads" - 0666 (except .htaccess)
+		    - file(s): all files in "templates/emails" - 0666 (except .htaccess)
+		    - file(s): all files in "templates/static" - 0666 (except .htaccess)
+		8. Access the site at the URL you set at step 4.
+		9. Access the admin panel at the URL you set at step 4: http://URL/administration/ ( username: admin / password: admin )
+		    - set your email, change admin/username password: General Settings/Admin Settings
+		    - set website name, theme, meta information: General Settings/Site Settings
+		    - TIP: for best results with email sending, you should consider using a SMTP setup. One is predefined under General Settings/Email Settings ( change the options to match your account )
+		    - set the correct audio/video conversion tool paths: System Settings/Audio Conversion Settings and System Settings/Video Conversion Settings
+		    - set the number of thumbnails to be grabbed from each uploaded video: System Settings/Thumbnail Settings
+
+- For support, please use: http://helpdesk.mediasharesuite.com/
+
+
+#############################
+### UPGRADE INSTRUCTIONS: ###
+#############################
+
+IMPORTANT: BEFORE upgrading, make sure you know your script license order number, THEN contact us via email ( office@mediasharesuite.com ) or Helpdesk ( http://helpdesk.mediasharesuite.com )
+	   to obtain your unique license key - this can be obtained only by contacting us and providing your valid script license order number _AND_ the domain name _OR_ IP address on which the script is 
+	   intended to run. If your order number checks out, we will immediately reply and let you know what your unique license key is. 
+
+IMPORTANT: If you are UPGRADING, any code, template or design changes will be lost. After the upgrade, the website will look like a default MediaShare installation, but will contain all your data!
+	   If you are UPGRADING from older versions, you must upgrade to each intermediary release, like this: from version 1.x to 2.0, from 2.0 to 2.1, from 2.1 to 3.0
+	   If you are UPGRADING from version 2.1, follow these steps: 
+		0.  - BACKUP your database BEFORE doing any upgrades!! 
+		1.  - Warning: The language files will be overwriten ( contact Support if you want to keep language file changes while upgrading )
+		    - Move or delete everything EXCEPT the "media" folder. 
+		2.  - Copy/Overwrite all the files with the ones provided in the upgrade/installation package. ( note: the __INSTALL folder can be skipped, or deleted if already copied )
+		3.  - Edit configs/config.main.php and set your script license order number, your unique license key, and set the script access URL along with the MySQL connection settings.
+		    - NOTE: If you do not set the correct order number and license key, the script will never work. 
+		4.  - Edit cgi-bin/ubr_upload.pl and set the path to match your server environment.
+		5.  - If the installation is in a sub-folder, edit .htaccess and set the folder name to the option RewriteBase /subfolder_name
+		6.  - Make sure the correct permissions are set for these files/folders:
+			- folder(s): "cgi-bin" and all files in it - 0755
+			- folder(s): "media/files_user_bgimages" - 0777
+			- folder(s): "modules/wordfiltering" - 0777
+			- file(s): all files in "modules/wordfiltering" - 0666 (except .htaccess)
+			- folder(s): "modules/staticpages" - 0777
+			- file(s): all files in "modules/staticpages" - 0666 (except .htaccess)
+    			- file(s): all files in "templates/ads" - 0666 (except .htaccess)
+			- file(s): all files in "templates/emails" - 0666 (except .htaccess)
+			- file(s): all files in "templates/static" - 0666 (except .htaccess)
+		7.  - Run the sql upgrade script, MSS3_upgrade.sql
+		8.  - Delete any cache files from "media/cache/template_c" (except .htaccess)
+		9.  - NOTE: After the upgrade, some language-file country flags might be reset to the default, which is United Kingdom. 
+		            Re-assigning the language country flags can be done from the admin panel ( Settings/Language Settings/Edit any language/Choose language country flag ).
+
+- For support, please use: http://helpdesk.mediasharesuite.com/
+
+########################################################################################################

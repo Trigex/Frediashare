@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /administration/
+Disallow: /cgi-bin/
+Disallow: /configs/
+Disallow: /js/
+Disallow: /media/
+Disallow: /modules/
+Disallow: /styles/
+Disallow: /templates/

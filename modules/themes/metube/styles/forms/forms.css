@@ -1,0 +1,48 @@
+input { font-weight: normal; }
+fieldset { border:1px solid #cccccc; padding: 10px; }
+legend { font-size: 14px; }
+textarea { border:1px solid #518800; color: #4d4d4d; background: #adc8da; font: 12px Arial; padding: 2px; }
+/* textarea:hover { border:1px solid #518800; color: #4d4d4d; background: #ebf6fd; font: 12px Arial; padding: 3px; } */
+
+/* FORM FIELDS: INPUTS */
+.ff, .cp {
+    border: 1px solid #C5D0D6;
+    background:white none repeat scroll 0%;
+    font-family:verdana,sans-serif;
+    font-size: 90%;
+    color: #333;
+    padding: 5px;
+    }
+.fd {
+    border: 1px solid #C5D0D6;
+    background:white none repeat scroll 0%;
+    font-family:verdana,sans-serif;
+    font-size: 90%;
+    color: #333;
+    padding: 3px;
+    text-align: center;
+    width: 330px;
+    height: 90px;
+    }
+.ff:hover, .ff:focus, .cp:hover, .cp:focus, .fd:hover, .fd:focus {
+    border: 1px solid #C5D0D6;
+    background: #fcfcfc none repeat scroll 0%; 
+    color: #333;
+    }
+/* FORM FIELDS: BUTTONS */
+.fb {
+    background: white url(../../images/btn_fill.gif) repeat-x scroll 0%;
+    color: #173778;
+    font-weight: bold;
+    border: 1px solid #fa961f;
+    font-family:arial,verdana,sans-serif;
+    font-size: 12px;
+    padding: 2px 5px;
+    text-decoration: none;
+    cursor: pointer;
+    }
+.fb:hover { text-decoration: underline; color: #1e479b; background: white url(../../images/btn_fill_hover.gif) repeat-x scroll 0%; cursor: pointer; }
+
+/* COMMENTS */
+.comsubj { font-size: 140%; font-weight: bold; color: #00000A; }
+.comments { font-size: 100%; font-weight: bold;}

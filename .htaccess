@@ -1,0 +1,713 @@
+# php_value max_execution_time 300000
+# php_value max_input_time 120000
+# php_value memory_limit 128M
+# php_value post_max_size 100M
+# php_value upload_max_filesize 100M
+# php_value session.gc_maxlifetime 144000
+
+Options -Indexes
+Options +FollowSymlinks
+<Files .htaccess>
+    deny from all
+</Files> 
+<Files ~ "^(.*)\.(inc|inc\.php|tpl|log)$">
+    deny from all
+</Files>
+<IfModule mod_security.c>
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+
+RewriteEngine On
+RewriteBase /
+
+    #### block out some common exploits
+RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|\%3D) [OR]
+RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [OR]
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+RewriteCond %{QUERY_STRING} SELECT(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} UNION(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} UPDATE(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteRule ^([^.]*)/?$ index.php [L]
+
+    #### www redirection (in case you need it) ####
+# RewriteCond %{HTTP_HOST} ^your-domain.com.com [NC]
+# RewriteRule ^(.*)$ http://www.your-domain.com/$1 [L,R=301]
+
+    #### non www redirection (in case you need it) ####
+# RewriteCond %{HTTP_HOST} ^your-domain.com [NC]
+# RewriteRule ^(.*)$ http://your-domain.com/$1 [L,R=301]
+
+    #### Image Hotlink Protection ####
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?your-domain.com [NC]
+# RewriteRule \.(jpg|jpeg|png|gif|bmp)$ - [NC,F,L]
+
+RewriteRule ^user/([^/]*)$ modules/channels/userpage.php?user=$1 [L]    
+RewriteRule ^language/([^/]*)$ login.php?language=$1 [L]
+RewriteRule ^administration/language/([^/]*)$ administration/index.php?language=$1 [L]
+
+RewriteRule ^main index.php [L]
+RewriteRule ^login login.php [L]
+RewriteRule ^logout logout.php [L]
+RewriteRule ^tags tags.php [L]
+
+RewriteRule ^reset_password/([^/]*)$ passrecovery.php?step=reset&pid=$1 [L]
+RewriteRule ^adclick/([^/]*)$ fadclick.php?tid=$1 [L]
+
+    #### STATIC PAGES ####
+RewriteRule ^t/([^/]*)$ modules/staticpages/$1 [L]
+
+    #### CHANNELS and other ####
+RewriteRule ^channels/page([^/]*)$ modules/channels/channels.php?page=$1 [L]
+RewriteRule ^channels/([^/]*)$ modules/channels/channels.php?sort=$1 [L]
+RewriteRule ^channels/([^/]*)/page([^/]*)$ modules/channels/channels.php?sort=$1&page=$2 [L]
+RewriteRule ^channels/([^/]*)/([^/]*)$ modules/channels/channels.php?sort=$1&chtype=$2 [L]
+RewriteRule ^channels/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/channels.php?sort=$1&chtype=$2&page=$3 [L]
+RewriteRule ^channels modules/channels/channels.php [L]
+
+RewriteRule ^my_profile_audios/mv modules/channels/ch_video.php?v=mv&f=a [L]
+RewriteRule ^my_profile_audios/mf modules/channels/ch_video.php?v=mf&f=a [L]
+RewriteRule ^my_profile_videos/mv modules/channels/ch_video.php?v=mv&f=v [L]
+RewriteRule ^my_profile_videos/mf modules/channels/ch_video.php?v=mf&f=v [L]
+RewriteRule ^my_profile_images/mv modules/channels/ch_video.php?v=mv&f=i [L]
+RewriteRule ^my_profile_images/mf modules/channels/ch_video.php?v=mf&f=i [L]
+RewriteRule ^my_profile_theme modules/channels/ch_theme.php [L]
+RewriteRule ^my_profile_audios modules/channels/ch_video.php?v=mv&f=a [L]
+RewriteRule ^my_profile_videos modules/channels/ch_video.php?v=mv&f=v [L]
+RewriteRule ^my_profile_images modules/channels/ch_video.php?v=mv&f=i [L]
+RewriteRule ^my_profile_info modules/channels/ch_info.php [L]
+RewriteRule ^my_profile_location modules/channels/ch_loc.php [L]
+RewriteRule ^my_profile_performer modules/channels/ch_perform.php [L]
+RewriteRule ^my_profile_url modules/channels/ch_url.php [L]
+RewriteRule ^my_profile_shows modules/channels/ch_events.php [L]
+RewriteRule ^my_profile modules/channels/ch_profile.php [L]
+RewriteRule ^my_subscriptions/unsubscribe/pl/([^/]*)$ modules/channels/my_subs.php?act=unsub&pl=$1 [L]
+RewriteRule ^my_subscriptions/unsubscribe/fav/([^/]*)$ modules/channels/my_subs.php?act=unsub&fav=$1 [L]
+RewriteRule ^my_subscriptions/unsubscribe/([^/]*)$ modules/channels/my_subs.php?act=unsub&auser=$1 [L]
+
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2 [L]
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/pl/([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&pkey=$3 [L]
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/pl/([^/]*)/page([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&pkey=$3&page=$4 [L]
+
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/pl/([^/]*)/([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&pkey=$3&filter=$4 [L]
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/pl/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&pkey=$3&filter=$4&page=$5 [L]
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/pl/([^/]*)/page([^/]*)/([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&pkey=$3&page=$4&filter=$5 [L]
+
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&page=$3 [L]
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&filter=$3 [L]
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&filter=$3&page=$4 [L]
+RewriteRule ^my_subscriptions/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ modules/channels/my_subs.php?user=$1&ftype=$2&page=$3&filter=$4 [L]
+
+RewriteRule ^my_subscriptions modules/channels/my_subs.php [L]
+RewriteRule ^my_subscribers/page([^/]*)$ modules/channels/my_usubs.php?page=$1 [L]
+RewriteRule ^my_subscribers/([^/]*)$ modules/channels/my_usubs.php?filter=$1 [L]
+RewriteRule ^my_subscribers/([^/]*)/page([^/]*)$ modules/channels/my_usubs.php?filter=$1&page=$2 [L]
+RewriteRule ^my_subscribers modules/channels/my_usubs.php [L]
+
+
+    #### COMMENTS ####
+RewriteRule ^my_comments/([^/]*)$ comments.php?type=$1 [L]
+RewriteRule ^my_comments/([^/]*)/page([^/]*)$ comments.php?type=$1&page=$2 [L]
+RewriteRule ^my_comments/profile/([^/]*)$ comments.php?type=profile&st=$1 [L]
+RewriteRule ^my_comments/profile/([^/]*)/app0/([^/]*)$ comments.php?type=profile&st=$1&app=0&cm=$2 [L]
+RewriteRule ^my_comments/profile/([^/]*)/app1/([^/]*)$ comments.php?type=profile&st=$1&app=1&cm=$2 [L]
+RewriteRule ^my_comments/profile/([^/]*)/page([^/]*)$ comments.php?type=profile&st=$1&page=$2 [L]
+RewriteRule ^my_comments/profile/([^/]*)/page([^/]*)/app0/([^/]*)$ comments.php?type=profile&st=$1&page=$2&app=0&cm=$3 [L]
+RewriteRule ^my_comments/profile/([^/]*)/page([^/]*)/app1/([^/]*)$ comments.php?type=profile&st=$1&page=$2&app=1&cm=$3 [L]
+RewriteRule ^my_comments/([^/]*)/([^/]*)/([^/]*)$ comments.php?type=$1&id=$2&st=$3 [L]
+RewriteRule ^my_comments/([^/]*)/([^/]*)/([^/]*)/app0/([^/]*)$ comments.php?type=$1&id=$2&st=$3&app=0&cm=$4 [L]
+RewriteRule ^my_comments/([^/]*)/([^/]*)/([^/]*)/app1/([^/]*)$ comments.php?type=$1&id=$2&st=$3&app=1&cm=$4 [L]
+RewriteRule ^my_comments/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ comments.php?type=$1&id=$2&st=$3&page=$4 [L]
+RewriteRule ^my_comments/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/app0/([^/]*)$ comments.php?type=$1&id=$2&st=$3&page=$4&app=0&cm=$5 [L]
+RewriteRule ^my_comments/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/app1/([^/]*)$ comments.php?type=$1&id=$2&st=$3&page=$4&app=1&cm=$5 [L]
+
+    #### RESPONSES ####
+RewriteRule ^responses/([^/]*)$ modules/channels/file_respmanage.php?type=$1 [L]
+RewriteRule ^responses/([^/]*)/page([^/]*)$ modules/channels/file_respmanage.php?type=$1&page=$2 [L]
+RewriteRule ^responses/([^/]*)/([^/]*)/([^/]*)$ modules/channels/file_respmanage.php?type=$1&id=$2&st=$3 [L]
+RewriteRule ^responses/([^/]*)/([^/]*)/([^/]*)/app0/([^/]*)$ modules/channels/file_respmanage.php?type=$1&id=$2&st=$3&app=0&cm=$4 [L]
+RewriteRule ^responses/([^/]*)/([^/]*)/([^/]*)/app1/([^/]*)$ modules/channels/file_respmanage.php?type=$1&id=$2&st=$3&app=1&cm=$4 [L]
+RewriteRule ^responses/([^/]*)/([^/]*)/([^/]*)/app2/([^/]*)$ modules/channels/file_respmanage.php?type=$1&id=$2&st=$3&app=2&cm=$4 [L]
+RewriteRule ^responses/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/file_respmanage.php?type=$1&id=$2&st=$3&page=$4 [L]
+RewriteRule ^responses/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/app0/([^/]*)$ modules/channels/file_respmanage.php?type=$1&id=$2&st=$3&page=$4&app=0&cm=$5 [L]
+RewriteRule ^responses/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/app1/([^/]*)$ modules/channels/file_respmanage.php?type=$1&id=$2&st=$3&page=$4&app=1&cm=$5 [L]
+RewriteRule ^video_response_upload/([^/]*)$ modules/channels/file_resp.php?rtype=video&rto=$1 [L]
+RewriteRule ^image_response_upload/([^/]*)$ modules/channels/file_resp.php?rtype=image&rto=$1 [L]
+RewriteRule ^audio_response_upload/([^/]*)$ modules/channels/file_resp.php?rtype=audio&rto=$1 [L]
+
+    #### BLOCKED USERS ####
+RewriteRule ^blocked_users/block/([^/]*)$ blocked.php?action=block&user=$1 [L]
+RewriteRule ^blocked_users/unblock/([^/]*)$ blocked.php?action=unblock&user=$1 [L]
+RewriteRule ^blocked_users/delete/([^/]*)$ blocked.php?action=delete&user=$1 [L]
+RewriteRule ^blocked_users/page([^/]*)$ blocked.php?page=$1 [L]
+RewriteRule ^blocked_users/page([^/]*)/block/([^/]*)$ blocked.php?page=$1&action=block&user=$2 [L]
+RewriteRule ^blocked_users/page([^/]*)/unblock/([^/]*)$ blocked.php?page=$1&action=unblock&user=$2 [L]
+RewriteRule ^blocked_users blocked.php [L]
+
+    #### RSS FEEDS ####
+RewriteRule ^rss/([^/]*)/([^/]*)$ rss.php?type=$1&show=$2 [L]
+RewriteRule ^rss_feeds rss_feeds.php [L]
+
+    #### SIGNUP: resend code ####
+RewriteRule ^signup/resend/([^/]*)$ modules/signup/signup.php?resend=$1 [L]
+RewriteRule ^signup/([^/]*)$ modules/signup/signup.php?code=$1 [L]
+RewriteRule ^signup modules/signup/signup.php [L]
+
+    #### PROFILE: user profiles pages ####
+RewriteRule ^profile/([^/]*)$ profile.php?user=$1 [L]
+
+    #### FAVORITES: user favorite files, paging and sorting ####
+RewriteRule ^user_favorites/([^/]*)$ favorites.php?user=$1 [L]
+RewriteRule ^user_favorites/([^/]*)/audio/page([^/]*)$ favorites.php?user=$1&pagea=$2 [L]
+RewriteRule ^user_favorites/([^/]*)/audio/([^/]*)$ favorites.php?user=$1&atype=$2 [L]
+RewriteRule ^user_favorites/([^/]*)/audio/([^/]*)/page([^/]*)$ favorites.php?user=$1&atype=$2&pagea=$3 [L]
+RewriteRule ^user_favorites/([^/]*)/image/page([^/]*)$ favorites.php?user=$1&pagei=$2 [L]
+RewriteRule ^user_favorites/([^/]*)/image/([^/]*)$ favorites.php?user=$1&itype=$2 [L]
+RewriteRule ^user_favorites/([^/]*)/image/([^/]*)/page([^/]*)$ favorites.php?user=$1&itype=$2&pagei=$3 [L]
+RewriteRule ^user_favorites/([^/]*)/video/page([^/]*)$ favorites.php?user=$1&page=$2 [L]
+RewriteRule ^user_favorites/([^/]*)/video/([^/]*)$ favorites.php?user=$1&vtype=$2 [L]
+RewriteRule ^user_favorites/([^/]*)/video/([^/]*)/page([^/]*)$ favorites.php?user=$1&vtype=$2&page=$3 [L]
+
+    #### SEARCH: paging, sorting ####
+RewriteRule ^search/audios/([^/]*)$ search.php?searcha=$1 [L]    
+RewriteRule ^search/audios/([^/]*)/page([^/]*)$ search.php?searcha=$1&page=$2 [L]
+RewriteRule ^search/audios/([^/]*)/([^/]*)$ search.php?searcha=$1&filter=$2 [L]
+RewriteRule ^search/audios/([^/]*)/([^/]*)/page([^/]*)$ search.php?searcha=$1&filter=$2&page=$3 [L]
+RewriteRule ^search/images/([^/]*)$ search.php?searchi=$1 [L]
+RewriteRule ^search/images/([^/]*)/page([^/]*)$ search.php?searchi=$1&page=$2 [L]
+RewriteRule ^search/images/([^/]*)/([^/]*)$ search.php?searchi=$1&filter=$2 [L]
+RewriteRule ^search/images/([^/]*)/([^/]*)/page([^/]*)$ search.php?searchi=$1&filter=$2&page=$3 [L]
+RewriteRule ^search/videos/([^/]*)$ search.php?searchv=$1 [L]
+RewriteRule ^search/videos/([^/]*)/page([^/]*)$ search.php?searchv=$1&page=$2 [L]
+RewriteRule ^search/videos/([^/]*)/([^/]*)$ search.php?searchv=$1&filter=$2 [L]
+RewriteRule ^search/videos/([^/]*)/([^/]*)/page([^/]*)$ search.php?searchv=$1&filter=$2&page=$3 [L]
+RewriteRule ^search/playlists/([^/]*)$ search.php?searchp=$1 [L]
+RewriteRule ^search/playlists/([^/]*)/page([^/]*)$ search.php?searchp=$1&page=$2 [L]
+RewriteRule ^search/playlists/([^/]*)/([^/]*)$ search.php?searchp=$1&filter=$2 [L]
+RewriteRule ^search/playlists/([^/]*)/([^/]*)/page([^/]*)$ search.php?searchp=$1&filter=$2&page=$3 [L]
+RewriteRule ^search/members/([^/]*)$ search.php?searchm=$1 [L]
+RewriteRule ^search/members/([^/]*)/page([^/]*)$ search.php?searchm=$1&page=$2 [L]
+RewriteRule ^search/members/([^/]*)/([^/]*)$ search.php?searchm=$1&filter=$2 [L]
+RewriteRule ^search/members/([^/]*)/([^/]*)/page([^/]*)$ search.php?searchm=$1&filter=$2&page=$3 [L]
+RewriteRule ^search/channels/([^/]*)$ search.php?searchm=$1 [L]
+RewriteRule ^search/channels/([^/]*)/page([^/]*)$ search.php?searchm=$1&page=$2 [L]
+RewriteRule ^search/channels/([^/]*)/([^/]*)$ search.php?searchm=$1&filter=$2 [L]
+RewriteRule ^search/channels/([^/]*)/([^/]*)/page([^/]*)$ search.php?searchm=$1&filter=$2&page=$3 [L]
+RewriteRule ^search/tags/([^/]*)$ search.php?searcht=$1 [L]
+RewriteRule ^search/tags/([^/]*)/page([^/]*)$ search.php?searcht=$1&page=$2 [L]
+RewriteRule ^search/tags/([^/]*)/([^/]*)$ search.php?searcht=$1&filter=$2 [L]
+RewriteRule ^search/tags/([^/]*)/([^/]*)/page([^/]*)$ search.php?searcht=$1&filter=$2&page=$3 [L]
+RewriteRule ^search/all/([^/]*)$ search.php?searchall=$1 [L]
+RewriteRule ^search/all/([^/]*)/page([^/]*)$ search.php?searchall=$1&page=$2 [L]
+RewriteRule ^search/all/([^/]*)/([^/]*)$ search.php?searchall=$1&filter=$2 [L]
+RewriteRule ^search/all/([^/]*)/([^/]*)/page([^/]*)$ search.php?searchall=$1&filter=$2&page=$3 [L]
+RewriteRule ^search search.php [L]
+
+    #### INBOX: messages, delete, mark/unmark, reply, compose, confirmation, paging ####
+RewriteRule ^inbox/page([^/]*)$ inbox.php?page=$1 [L]
+RewriteRule ^inbox/confirmation$ inbox.php?action=confirmation [L]    
+RewriteRule ^inbox/([^/]*)$ message.php?type=inbox&mid=$1 [L]
+RewriteRule ^inbox/delete/([^/]*)$ inbox.php?action=delete&mid=$1 [L]
+RewriteRule ^inbox/unmark/([^/]*)$ inbox.php?action=unmark&mid=$1 [L]
+RewriteRule ^inbox/mark/([^/]*)$ inbox.php?action=mark&mid=$1 [L]
+RewriteRule ^inbox/block/([^/]*)$ inbox.php?action=block&mid=$1 [L]
+RewriteRule ^inbox/unblock/([^/]*)$ inbox.php?action=unblock&mid=$1 [L]
+RewriteRule ^compose/selected$ compose.php?type=selected [L]
+
+RewriteRule ^inbox/compose/([^/]*)$ compose.php?type=new&to=$1 [L]
+RewriteRule ^inbox/sort/([^/]*)$ inbox.php?timesort=$1 [L]
+RewriteRule ^inbox/sort/([^/]*)/page([^/]*)$ inbox.php?timesort=$1&page=$2 [L]
+RewriteRule ^inbox inbox.php [L]
+
+    #### OUTBOX: messages, delete, paging ####
+RewriteRule ^outbox/block/([^/]*)$ outbox.php?action=block&mid=$1 [L]
+RewriteRule ^outbox/unblock/([^/]*)$ outbox.php?action=unblock&mid=$1 [L]
+RewriteRule ^outbox/page([^/]*)$ outbox.php?page=$1 [L]
+RewriteRule ^outbox/delete/([^/]*)$ outbox.php?action=delete&mid=$1 [L]
+RewriteRule ^outbox/([^/]*)$ message.php?type=outbox&mid=$1 [L]
+RewriteRule ^outbox/sort/([^/]*)$ outbox.php?timesort=$1 [L]
+RewriteRule ^outbox/sort/([^/]*)/page([^/]*)$ outbox.php?timesort=$1&page=$2 [L]
+RewriteRule ^outbox outbox.php [L]
+RewriteRule ^compose compose.php [L]
+
+    #### MY VIDEOS: edit, delete, confirmations, errors, paging, sorting ####
+RewriteRule ^my_videos/edit/([^/]*)$ my_videos.php?action=edit&vid=$1 [L]
+RewriteRule ^my_videos/delete/([^/]*)$ my_videos.php?action=delete&vid=$1 [L]
+RewriteRule ^my_videos/confirmation$ my_videos.php?type=dy [L]
+RewriteRule ^my_videos/error$ my_videos.php?type=dn [L]
+RewriteRule ^my_videos/page([^/]*)$ my_videos.php?page=$1 [L]
+RewriteRule ^my_videos/([^/]*)$ my_videos.php?vtype=$1 [L]
+RewriteRule ^my_videos/([^/]*)/page([^/]*)$ my_videos.php?vtype=$1&page=$2 [L]
+RewriteRule ^my_videos/([^/]*)/([^/]*)$ my_videos.php?vtype=$1&timesort=$2 [L]
+RewriteRule ^my_videos/([^/]*)/([^/]*)/page([^/]*)$ my_videos.php?vtype=$1&timesort=$2&page=$3 [L]
+RewriteRule ^my_videos my_videos.php [L]
+
+    #### MY AUDIOS: edit, delete, confirmations, errors, paging, sorting ####
+RewriteRule ^my_audios/edit/([^/]*)$ my_audios.php?action=edit&vid=$1 [L]
+RewriteRule ^my_audios/delete/([^/]*)$ my_audios.php?action=delete&vid=$1 [L]
+RewriteRule ^my_audios/confirmation$ my_audios.php?type=dy [L]
+RewriteRule ^my_audios/error$ my_audios.php?type=dn [L]
+RewriteRule ^my_audios/page([^/]*)$ my_audios.php?page=$1 [L]
+RewriteRule ^my_audios/([^/]*)$ my_audios.php?vtype=$1 [L]
+RewriteRule ^my_audios/([^/]*)/page([^/]*)$ my_audios.php?vtype=$1&page=$2 [L]
+RewriteRule ^my_audios/([^/]*)/([^/]*)$ my_audios.php?vtype=$1&timesort=$2 [L]
+RewriteRule ^my_audios/([^/]*)/([^/]*)/page([^/]*)$ my_audios.php?vtype=$1&timesort=$2&page=$3 [L]
+RewriteRule ^my_audios my_audios.php [L]
+
+    #### MY IMAGES: edit, delete, confirmations, errors, paging, sorting ####
+RewriteRule ^my_images/edit/([^/]*)$ my_images.php?action=edit&vid=$1 [L]
+RewriteRule ^my_images/delete/([^/]*)$ my_images.php?action=delete&vid=$1 [L]
+RewriteRule ^my_images/confirmation$ my_images.php?type=dy [L]
+RewriteRule ^my_images/error$ my_images.php?type=dn [L]
+RewriteRule ^my_images/page([^/]*)$ my_images.php?page=$1 [L]
+RewriteRule ^my_images/([^/]*)$ my_images.php?vtype=$1 [L]
+RewriteRule ^my_images/([^/]*)/page([^/]*)$ my_images.php?vtype=$1&page=$2 [L]
+RewriteRule ^my_images/([^/]*)/([^/]*)$ my_images.php?vtype=$1&timesort=$2 [L]
+RewriteRule ^my_images/([^/]*)/([^/]*)/page([^/]*)$ my_images.php?vtype=$1&timesort=$2&page=$3 [L]
+RewriteRule ^my_images my_images.php [L]
+
+    #### MY FRIENDS: enable, disable, delete, invite, reject invite, ratings, comments, paging ####
+RewriteRule ^reject/([^/]*)$ nothanks.php?code=$1 [L]    
+RewriteRule ^my_friends/invite$ my_friends.php?action=invite [L]
+RewriteRule ^my_friends/enable/([^/]*)$ my_friends.php?action=enable&fname=$1 [L]
+RewriteRule ^my_friends/disable/([^/]*)$ my_friends.php?action=disable&fname=$1 [L]
+RewriteRule ^my_friends/enable-ratings/([^/]*)$ my_friends.php?action=er&fname=$1 [L]
+RewriteRule ^my_friends/disable-ratings/([^/]*)$ my_friends.php?action=dr&fname=$1 [L]
+RewriteRule ^my_friends/enable-comments/([^/]*)$ my_friends.php?action=ec&fname=$1 [L]
+RewriteRule ^my_friends/disable-comments/([^/]*)$ my_friends.php?action=dc&fname=$1 [L]
+RewriteRule ^my_friends/delete/([^/]*)$ my_friends.php?action=delete&fname=$1 [L]
+RewriteRule ^my_friends/page([^/]*)$ my_friends.php?page=$1 [L]
+RewriteRule ^my_friends/([^/]*)$ my_friends.php?filter=$1 [L]
+RewriteRule ^my_friends/([^/]*)/page([^/]*)$ my_friends.php?filter=$1&page=$2 [L]
+RewriteRule ^my_friends my_friends.php [L]
+
+    #### FRIENDS: user friends, paging, sorting ####
+RewriteRule ^user_friends/([^/]*)$ friends.php?user=$1 [L]
+RewriteRule ^user_friends/([^/]*)/page([^/]*)$ friends.php?user=$1&page=$2 [L]
+RewriteRule ^user_friends/([^/]*)/([^/]*)/page([^/]*)$ friends.php?user=$1&filter=$2&page=$3 [L]
+RewriteRule ^user_friends/([^/]*)/([^/]*)$ friends.php?user=$1&filter=$2 [L]
+
+    #### MY FAVORITES: paging, sorting, delete ####
+RewriteRule ^my_favorites/audio/confirmation$ my_favorites.php?atype=all&type=dy [L]
+RewriteRule ^my_favorites/image/confirmation$ my_favorites.php?itype=all&type=dy [L]
+RewriteRule ^my_favorites/video/confirmation$ my_favorites.php?vtype=all&type=dy [L]
+RewriteRule ^my_favorites/video/page([^/]*)$ my_favorites.php?page=$1 [L]
+RewriteRule ^my_favorites/video/delete/([^/]*)$ my_favorites.php?action=delete&vid=$1 [L]
+RewriteRule ^my_favorites/video/([^/]*)$ my_favorites.php?vtype=$1 [L]
+RewriteRule ^my_favorites/video/([^/]*)/page([^/]*)$ my_favorites.php?vtype=$1&page=$2 [L]
+RewriteRule ^my_favorites/audio/page([^/]*)$ my_favorites.php?pagea=$1 [L]
+RewriteRule ^my_favorites/audio/delete/([^/]*)$ my_favorites.php?action=delete&aid=$1 [L]
+RewriteRule ^my_favorites/audio/([^/]*)$ my_favorites.php?atype=$1 [L]
+RewriteRule ^my_favorites/audio/([^/]*)/page([^/]*)$ my_favorites.php?atype=$1&pagea=$2 [L]
+RewriteRule ^my_favorites/image/page([^/]*)$ my_favorites.php?pagei=$1 [L]
+RewriteRule ^my_favorites/image/delete/([^/]*)$ my_favorites.php?action=delete&iid=$1 [L]
+RewriteRule ^my_favorites/image/([^/]*)$ my_favorites.php?itype=$1 [L]
+RewriteRule ^my_favorites/image/([^/]*)/page([^/]*)$ my_favorites.php?itype=$1&pagei=$2 [L]
+RewriteRule ^my_favorites my_favorites.php [L]
+
+    #### MY HISTORY: paging, sorting, delete ####
+RewriteRule ^my_history/audio/confirmation$ my_history.php?atype=all&type=dy [L]
+RewriteRule ^my_history/image/confirmation$ my_history.php?itype=all&type=dy [L]
+RewriteRule ^my_history/video/confirmation$ my_history.php?vtype=all&type=dy [L]
+RewriteRule ^my_history/video/page([^/]*)$ my_history.php?page=$1 [L]
+RewriteRule ^my_history/video/delete/([^/]*)$ my_history.php?action=delete&vid=$1 [L]
+RewriteRule ^my_history/video/([^/]*)$ my_history.php?vtype=$1 [L]
+RewriteRule ^my_history/video/([^/]*)/page([^/]*)$ my_history.php?vtype=$1&page=$2 [L]
+RewriteRule ^my_history/audio/page([^/]*)$ my_history.php?pagea=$1 [L]
+RewriteRule ^my_history/audio/delete/([^/]*)$ my_history.php?action=delete&aid=$1 [L]
+RewriteRule ^my_history/audio/([^/]*)$ my_history.php?atype=$1 [L]
+RewriteRule ^my_history/audio/([^/]*)/page([^/]*)$ my_history.php?atype=$1&pagea=$2 [L]
+RewriteRule ^my_history/image/page([^/]*)$ my_history.php?pagei=$1 [L]
+RewriteRule ^my_history/image/delete/([^/]*)$ my_history.php?action=delete&iid=$1 [L]
+RewriteRule ^my_history/image/([^/]*)$ my_history.php?itype=$1 [L]
+RewriteRule ^my_history/image/([^/]*)/page([^/]*)$ my_history.php?itype=$1&pagei=$2 [L]
+RewriteRule ^my_history my_history.php [L]
+
+    #### MY quicklist: paging, sorting, delete ####
+RewriteRule ^my_quicklist/audio/confirmation$ modules/channels/my_quicklist.php?atype=all&type=dy [L]
+RewriteRule ^my_quicklist/image/confirmation$ modules/channels/my_quicklist.php?itype=all&type=dy [L]
+RewriteRule ^my_quicklist/video/confirmation$ modules/channels/my_quicklist.php?vtype=all&type=dy [L]
+RewriteRule ^my_quicklist/import_audio_quicklist$ modules/channels/my_quicklist.php?type=import_audio [L]
+RewriteRule ^my_quicklist/import_image_quicklist$ modules/channels/my_quicklist.php?type=import_image [L]
+RewriteRule ^my_quicklist/import_video_quicklist$ modules/channels/my_quicklist.php?type=import_video [L]
+RewriteRule ^my_quicklist/import_quicklist$ modules/channels/my_quicklist.php?type=all [L]
+RewriteRule ^my_quicklist/video/page([^/]*)$ modules/channels/my_quicklist.php?page=$1 [L]
+RewriteRule ^my_quicklist/video/delete/([^/]*)$ modules/channels/my_quicklist.php?action=delete&vid=$1 [L]
+RewriteRule ^my_quicklist/video/([^/]*)$ modules/channels/my_quicklist.php?vtype=$1 [L]
+RewriteRule ^my_quicklist/video/([^/]*)/page([^/]*)$ modules/channels/my_quicklist.php?vtype=$1&page=$2 [L]
+RewriteRule ^my_quicklist/audio/page([^/]*)$ modules/channels/my_quicklist.php?pagea=$1 [L]
+RewriteRule ^my_quicklist/audio/delete/([^/]*)$ modules/channels/my_quicklist.php?action=delete&aid=$1 [L]
+RewriteRule ^my_quicklist/audio/([^/]*)$ modules/channels/my_quicklist.php?atype=$1 [L]
+RewriteRule ^my_quicklist/audio/([^/]*)/page([^/]*)$ modules/channels/my_quicklist.php?atype=$1&pagea=$2 [L]
+RewriteRule ^my_quicklist/image/page([^/]*)$ modules/channels/my_quicklist.php?pagei=$1 [L]
+RewriteRule ^my_quicklist/image/delete/([^/]*)$ modules/channels/my_quicklist.php?action=delete&iid=$1 [L]
+RewriteRule ^my_quicklist/image/([^/]*)$ modules/channels/my_quicklist.php?itype=$1 [L]
+RewriteRule ^my_quicklist/image/([^/]*)/page([^/]*)$ modules/channels/my_quicklist.php?itype=$1&pagei=$2 [L]
+RewriteRule ^my_quicklist modules/channels/my_quicklist.php [L]
+
+    #### MY quicklist: paging, sorting, delete ####
+RewriteRule ^my_playlists/video/([^/]*)$ modules/channels/my_playlist.php?vplkey=$1&vtype=all [L]
+RewriteRule ^my_playlists/video/([^/]*)/delete/([^/]*)$ modules/channels/my_playlist.php?vtype=all&action=delete&vplkey=$1&vid=$2 [L]
+RewriteRule ^my_playlists/video/([^/]*)/([^/]*)$ modules/channels/my_playlist.php?vplkey=$1&vtype=$2 [L]
+RewriteRule ^my_playlists/video/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/my_playlist.php?vplkey=$1&vtype=$2&page=$3 [L]
+RewriteRule ^my_playlists/audio/([^/]*)$ modules/channels/my_playlist.php?aplkey=$1&atype=all [L]
+RewriteRule ^my_playlists/audio/([^/]*)/delete/([^/]*)$ modules/channels/my_playlist.php?atype=all&action=delete&aplkey=$1&aid=$2 [L]
+RewriteRule ^my_playlists/audio/([^/]*)/([^/]*)$ modules/channels/my_playlist.php?aplkey=$1&atype=$2 [L]
+RewriteRule ^my_playlists/audio/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/my_playlist.php?aplkey=$1&atype=$2&pagea=$3 [L]
+RewriteRule ^my_playlists/image/([^/]*)$ modules/channels/my_playlist.php?iplkey=$1&itype=all [L]
+RewriteRule ^my_playlists/image/([^/]*)/delete/([^/]*)$ modules/channels/my_playlist.php?itype=all&action=delete&iplkey=$1&iid=$2 [L]
+RewriteRule ^my_playlists/image/([^/]*)/([^/]*)$ modules/channels/my_playlist.php?iplkey=$1&itype=$2 [L]
+RewriteRule ^my_playlists/image/([^/]*)/([^/]*)/page([^/]*)$ modules/channels/my_playlist.php?iplkey=$1&itype=$2&pagei=$3 [L]
+RewriteRule ^my_playlists/audio modules/channels/my_playlist.php?atype=all [L]
+RewriteRule ^my_playlists/image modules/channels/my_playlist.php?itype=all [L]
+RewriteRule ^my_playlists/video modules/channels/my_playlist.php?vtype=all [L]
+RewriteRule ^my_playlists modules/channels/my_playlist.php [L]
+RewriteRule ^share_video_playlist/([^/]*)$ modules/channels/my_playlist.php?action=plshare&vkey=$1 [L]
+RewriteRule ^share_image_playlist/([^/]*)$ modules/channels/my_playlist.php?action=plshare&ikey=$1 [L]
+RewriteRule ^share_audio_playlist/([^/]*)$ modules/channels/my_playlist.php?action=plshare&akey=$1 [L]
+
+RewriteRule ^video_playlist/([^/]*)$ modules/channels/playlist_details.php?type=video&vkey=$1 [L]
+RewriteRule ^video_playlist/([^/]*)/page([^/]*)$ modules/channels/playlist_details.php?type=video&vkey=$1&page=$2 [L]
+RewriteRule ^image_playlist/([^/]*)$ modules/channels/playlist_details.php?type=image&vkey=$1 [L]
+RewriteRule ^image_playlist/([^/]*)/page([^/]*)$ modules/channels/playlist_details.php?type=video&vkey=$1&page=$2 [L]
+RewriteRule ^audio_playlist/([^/]*)$ modules/channels/playlist_details.php?type=audio&vkey=$1 [L]
+RewriteRule ^audio_playlist/([^/]*)/page([^/]*)$ modules/channels/playlist_details.php?type=video&vkey=$1&page=$2 [L]
+
+    #### FILE: filtering [(all files, specific user files) + paging] ####
+
+RewriteRule ^videos/([^/]*)$ videos.php?type=$1 [L]
+RewriteRule ^videos/([^/]*)/page([^/]*)$ videos.php?type=$1&page=$2 [L]
+RewriteRule ^videos/([^/]*)/([^/]*)$ videos.php?type=$1&timesort=$2 [L]
+RewriteRule ^videos/([^/]*)/([^/]*)/page([^/]*)$ videos.php?type=$1&timesort=$2&page=$3 [L]
+RewriteRule ^user_videos/([^/]*)/([^/]*)$ videos.php?user=$1&type=$2 [L]
+RewriteRule ^user_videos/([^/]*)/([^/]*)/page([^/]*)$ videos.php?user=$1&type=$2&page=$3 [L]
+RewriteRule ^user_videos/([^/]*)/([^/]*)/([^/]*)$ videos.php?user=$1&type=$2&timesort=$3 [L]
+RewriteRule ^user_videos/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ videos.php?user=$1&type=$2&timesort=$3&page=$4 [L]
+
+RewriteRule ^images/([^/]*)$ images.php?type=$1 [L]
+RewriteRule ^images/([^/]*)/page([^/]*)$ images.php?type=$1&page=$2 [L]
+RewriteRule ^images/([^/]*)/([^/]*)$ images.php?type=$1&timesort=$2 [L]
+RewriteRule ^images/([^/]*)/([^/]*)/page([^/]*)$ images.php?type=$1&timesort=$2&page=$3 [L]
+RewriteRule ^user_images/([^/]*)/([^/]*)$ images.php?user=$1&type=$2 [L]
+RewriteRule ^user_images/([^/]*)/([^/]*)/page([^/]*)$ images.php?user=$1&type=$2&page=$3 [L]
+RewriteRule ^user_images/([^/]*)/([^/]*)/([^/]*)$ images.php?user=$1&type=$2&timesort=$3 [L]
+RewriteRule ^user_images/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ images.php?user=$1&type=$2&timesort=$3&page=$4 [L]
+
+RewriteRule ^audios/([^/]*)$ audios.php?type=$1 [L]
+RewriteRule ^audios/([^/]*)/page([^/]*)$ audios.php?type=$1&page=$2 [L]
+RewriteRule ^audios/([^/]*)/([^/]*)$ audios.php?type=$1&timesort=$2 [L]
+RewriteRule ^audios/([^/]*)/([^/]*)/page([^/]*)$ audios.php?type=$1&timesort=$2&page=$3 [L]
+RewriteRule ^user_audios/([^/]*)/([^/]*)$ audios.php?user=$1&type=$2 [L]
+RewriteRule ^user_audios/([^/]*)/([^/]*)/page([^/]*)$ audios.php?user=$1&type=$2&page=$3 [L]
+RewriteRule ^user_audios/([^/]*)/([^/]*)/([^/]*)$ audios.php?user=$1&type=$2&timesort=$3 [L]
+RewriteRule ^user_audios/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ audios.php?user=$1&type=$2&timesort=$3&page=$4 [L]
+
+    #### VIDEOS: specific user videos ####
+RewriteRule ^user_videos/([^/]*)$ videos.php?user=$1 [L]
+RewriteRule ^user_audios/([^/]*)$ audios.php?user=$1 [L]
+RewriteRule ^user_images/([^/]*)$ images.php?user=$1 [L]
+RewriteRule ^videos videos.php [L]
+RewriteRule ^audios audios.php [L]
+RewriteRule ^images images.php [L]
+
+    #### VIEW VIDEO: link, not approved ####
+RewriteRule ^video/not_approved$ video.php?type=na [L]    
+RewriteRule ^video/([^/]*)$ video.php?id=$1 [L]
+    #### VIEW AUDIO: link, not approved ####
+RewriteRule ^audio/not_approved$ audio.php?type=na [L]    
+RewriteRule ^audio/([^/]*)$ audio.php?id=$1 [L]
+    #### VIEW IMAGE: link, not approved ####
+RewriteRule ^image/not_approved$ image.php?type=na [L]    
+RewriteRule ^image/([^/]*)$ image.php?id=$1 [L]
+
+    #### EMAIL LINK TO FRIENDS ####
+RewriteRule ^video/email/([^/]*)$ femail.php?id=$1 [L]
+RewriteRule ^audio/email/([^/]*)$ femail.php?aid=$1 [L]
+RewriteRule ^image/email/([^/]*)$ femail.php?iid=$1 [L]
+
+    #### UPLOAD ####
+RewriteRule ^upload_video/confirmation$ upload.php?type=vconfirmation [L]
+RewriteRule ^upload_audio/confirmation$ upload.php?type=aconfirmation [L]
+RewriteRule ^upload_image/confirmation$ upload.php?type=iconfirmation [L]
+RewriteRule ^upload_audio$ audio_upload.php [L]
+RewriteRule ^upload_image$ image_upload.php [L]
+RewriteRule ^upload_video$ video_upload.php [L]
+#RewriteRule ^upload$ upload.php?a=1 [L]
+RewriteRule ^upload$ upload.php [L]
+
+    #### CATEGORIES: category details and paging ####
+RewriteRule ^categories/([^/]*)/([^/]*)$ categories.php?view=$1&id=$2 [L]
+RewriteRule ^categories/page([^/]*)$ categories.php?page=$1 [L]
+    #### CATEGORIES: show videos and paging ####
+RewriteRule ^categories/video/([^/]*)$ videos.php?category=$1 [L]
+RewriteRule ^categories/video/([^/]*)/([^/]*)$ videos.php?category=$1&type=$2 [L]
+RewriteRule ^categories/video/([^/]*)/([^/]*)/page([^/]*)$ videos.php?category=$1&type=$2&page=$3 [L]
+RewriteRule ^categories/video/([^/]*)/([^/]*)/([^/]*)$ videos.php?category=$1&type=$2&timesort=$3 [L]
+RewriteRule ^categories/video/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ videos.php?category=$1&type=$2&timesort=$3&page=$4 [L]
+    #### CATEGORIES: show audios and paging ####
+RewriteRule ^categories/audio/([^/]*)$ audios.php?category=$1 [L]
+RewriteRule ^categories/audio/([^/]*)/([^/]*)$ audios.php?category=$1&type=$2 [L]
+RewriteRule ^categories/audio/([^/]*)/([^/]*)/page([^/]*)$ audios.php?category=$1&type=$2&page=$3 [L]
+RewriteRule ^categories/audio/([^/]*)/([^/]*)/([^/]*)$ audios.php?category=$1&type=$2&timesort=$3 [L]
+RewriteRule ^categories/audio/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ audios.php?category=$1&type=$2&timesort=$3&page=$4 [L]
+    #### CATEGORIES: show images and paging ####
+RewriteRule ^categories/image/([^/]*)$ images.php?category=$1 [L]
+RewriteRule ^categories/image/([^/]*)/([^/]*)$ images.php?category=$1&type=$2 [L]
+RewriteRule ^categories/image/([^/]*)/([^/]*)/page([^/]*)$ images.php?category=$1&type=$2&page=$3 [L]
+RewriteRule ^categories/image/([^/]*)/([^/]*)/([^/]*)$ images.php?category=$1&type=$2&timesort=$3 [L]
+RewriteRule ^categories/image/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ images.php?category=$1&type=$2&timesort=$3&page=$4 [L]
+RewriteRule ^categories categories.php [L]
+
+    #### MEMBERS: paging ####
+RewriteRule ^members/page([^/]*)$ members.php?page=$1 [L]
+RewriteRule ^members/([^/]*)$ members.php?filter=$1 [L]
+RewriteRule ^members/([^/]*)/page([^/]*)$ members.php?filter=$1&page=$2 [L]
+RewriteRule ^members members.php [L]
+
+
+
+    ##### BEGIN ADMIN AREA #####
+RewriteRule ^administration/main administration/index.php [L]
+RewriteRule ^administration/login administration/index.php [L]
+    
+    ## FEAT, INAPP REQUESTS + paging
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/requests.php?type=$1&show=$2&filter=$3&page=$4&delete=$5 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/requests.php?type=$1&show=$2&filter=$3&page=$4&id=$5 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ administration/requests.php?type=$1&show=$2&filter=$3&page=$4 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/requests.php?type=$1&show=$2&page=$3&delete=$4 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/requests.php?type=$1&show=$2&page=$3&id=$4 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/page([^/]*)$ administration/requests.php?type=$1&show=$2&page=$3 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/([^/]*)/delete/([^/]*)$ administration/requests.php?type=$1&show=$2&filter=$3&delete=$4 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/([^/]*)/([^/]*)$ administration/requests.php?type=$1&show=$2&filter=$3&id=$4 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/([^/]*)$ administration/requests.php?type=$1&show=$2&filter=$3 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/delete/([^/]*)$ administration/requests.php?type=$1&show=$2&delete=$3 [L]
+RewriteRule ^administration/requests/([^/]*)/([^/]*)/([^/]*)$ administration/requests.php?type=$1&show=$2&id=$3 [L]    
+RewriteRule ^administration/requests/([^/]*)/([^/]*)$ administration/requests.php?type=$1&show=$2 [L]
+
+
+    ##### AUDIOS #####
+### all audios, paging, delete
+RewriteRule ^administration/audios/([^/]*)/([^/]*)$ administration/audios.php?type=$1&timesort=$2 [L]
+RewriteRule ^administration/audios/page([^/]*)/delete/([^/]*)$ administration/audios.php?page=$1&delete=$2 [L]
+RewriteRule ^administration/audios/([^/]*)/([^/]*)/page([^/]*)$ administration/audios.php?type=$1&timesort=$2&page=$3 [L]
+RewriteRule ^administration/audios/([^/]*)/([^/]*)/([^/]*)$ administration/audios.php?type=$1&timesort=$2&id=$3 [L]
+RewriteRule ^administration/audios/([^/]*)/([^/]*)/delete/([^/]*)$ administration/audios.php?type=$1&timesort=$2&delete=$3 [L]
+RewriteRule ^administration/audios/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/audios.php?type=$1&timesort=$2&page=$3&id=$4 [L]
+RewriteRule ^administration/audios/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/audios.php?type=$1&timesort=$2&page=$3&delete=$4 [L]
+#### user audios, paging, delete
+RewriteRule ^administration/audiou/([^/]*)/delete/([^/]*)$ administration/audios.php?user=$1&delete=$2 [L]
+RewriteRule ^administration/audiou/([^/]*)/page([^/]*)$ administration/audios.php?user=$1&page=$2 [L]
+RewriteRule ^administration/audiou/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ administration/audios.php?user=$1&type=$2&timesort=$3&page=$4 [L]
+RewriteRule ^administration/audiou/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/audios.php?user=$1&page=$2&delete=$3 [L]
+RewriteRule ^administration/audiou/([^/]*)/([^/]*)/([^/]*)$ administration/audios.php?user=$1&type=$2&timesort=$3 [L]
+RewriteRule ^administration/audiou/([^/]*)/([^/]*)/([^/]*)/([^/]*)$ administration/audios.php?user=$1&type=$2&timesort=$3&id=$4 [L]
+RewriteRule ^administration/audiou/([^/]*)/([^/]*)/([^/]*)/delete/([^/]*)$ administration/audios.php?user=$1&type=$2&timesort=$3&delete=$4 [L]
+RewriteRule ^administration/audiou/([^/]*)/page([^/]*)/([^/]*)$ administration/audios.php?user=$1&page=$2&id=$3 [L]
+RewriteRule ^administration/audiou/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/audios.php?user=$1&type=$2&timesort=$3&page=$4&delete=$5 [L]
+RewriteRule ^administration/audiou/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/audios.php?user=$1&type=$2&timesort=$3&page=$4&id=$5 [L]
+#### category audios, paging, delete
+RewriteRule ^administration/audioc/([^/]*)/([^/]*)/([^/]*)/delete/([^/]*)$ administration/audios.php?categ=$1&type=$2&timesort=$3&delete=$4 [L]
+RewriteRule ^administration/audioc/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/audios.php?categ=$1&type=$2&timesort=$3&page=$4&delete=$5 [L]
+RewriteRule ^administration/audioc/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/audios.php?categ=$1&type=$2&timesort=$3&page=$4&id=$5 [L]    
+RewriteRule ^administration/audioc/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ administration/audios.php?categ=$1&type=$2&timesort=$3&page=$4 [L]
+RewriteRule ^administration/audioc/([^/]*)/([^/]*)/([^/]*)$ administration/audios.php?categ=$1&type=$2&timesort=$3 [L]
+RewriteRule ^administration/audioc/([^/]*)/([^/]*)/([^/]*)/([^/]*)$ administration/audios.php?categ=$1&type=$2&timesort=$3&id=$4 [L]
+RewriteRule ^administration/audioc/([^/]*)/page([^/]*)/([^/]*)$ administration/audios.php?categ=$1&page=$2&id=$3 [L]
+RewriteRule ^administration/audioc/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/audios.php?categ=$1&page=$2&delete=$3 [L]
+
+    ##### IMAGES #####
+### all images, paging, delete
+RewriteRule ^administration/images/([^/]*)/([^/]*)$ administration/images.php?type=$1&timesort=$2 [L]
+RewriteRule ^administration/images/page([^/]*)/delete/([^/]*)$ administration/images.php?page=$1&delete=$2 [L]
+RewriteRule ^administration/images/([^/]*)/([^/]*)/page([^/]*)$ administration/images.php?type=$1&timesort=$2&page=$3 [L]
+RewriteRule ^administration/images/([^/]*)/([^/]*)/([^/]*)$ administration/images.php?type=$1&timesort=$2&id=$3 [L]
+RewriteRule ^administration/images/([^/]*)/([^/]*)/delete/([^/]*)$ administration/images.php?type=$1&timesort=$2&delete=$3 [L]
+RewriteRule ^administration/images/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/images.php?type=$1&timesort=$2&page=$3&id=$4 [L]
+RewriteRule ^administration/images/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/images.php?type=$1&timesort=$2&page=$3&delete=$4 [L]
+#### user images, paging, delete
+RewriteRule ^administration/imageu/([^/]*)/delete/([^/]*)$ administration/images.php?user=$1&delete=$2 [L]
+RewriteRule ^administration/imageu/([^/]*)/page([^/]*)$ administration/images.php?user=$1&page=$2 [L]
+RewriteRule ^administration/imageu/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ administration/images.php?user=$1&type=$2&timesort=$3&page=$4 [L]
+RewriteRule ^administration/imageu/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/images.php?user=$1&page=$2&delete=$3 [L]
+RewriteRule ^administration/imageu/([^/]*)/([^/]*)/([^/]*)$ administration/images.php?user=$1&type=$2&timesort=$3 [L]
+RewriteRule ^administration/imageu/([^/]*)/([^/]*)/([^/]*)/([^/]*)$ administration/images.php?user=$1&type=$2&timesort=$3&id=$4 [L]
+RewriteRule ^administration/imageu/([^/]*)/([^/]*)/([^/]*)/delete/([^/]*)$ administration/images.php?user=$1&type=$2&timesort=$3&delete=$4 [L]
+RewriteRule ^administration/imageu/([^/]*)/page([^/]*)/([^/]*)$ administration/images.php?user=$1&page=$2&id=$3 [L]
+RewriteRule ^administration/imageu/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/images.php?user=$1&type=$2&timesort=$3&page=$4&delete=$5 [L]
+RewriteRule ^administration/imageu/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/images.php?user=$1&type=$2&timesort=$3&page=$4&id=$5 [L]    
+#### category images, paging, delete
+RewriteRule ^administration/imagec/([^/]*)/([^/]*)/([^/]*)/delete/([^/]*)$ administration/images.php?categ=$1&type=$2&timesort=$3&delete=$4 [L]
+RewriteRule ^administration/imagec/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/images.php?categ=$1&type=$2&timesort=$3&page=$4&delete=$5 [L]
+RewriteRule ^administration/imagec/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/images.php?categ=$1&type=$2&timesort=$3&page=$4&id=$5 [L]    
+RewriteRule ^administration/imagec/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ administration/images.php?categ=$1&type=$2&timesort=$3&page=$4 [L]
+RewriteRule ^administration/imagec/([^/]*)/([^/]*)/([^/]*)$ administration/images.php?categ=$1&type=$2&timesort=$3 [L]
+RewriteRule ^administration/imagec/([^/]*)/([^/]*)/([^/]*)/([^/]*)$ administration/images.php?categ=$1&type=$2&timesort=$3&id=$4 [L]
+RewriteRule ^administration/imagec/([^/]*)/page([^/]*)/([^/]*)$ administration/images.php?categ=$1&page=$2&id=$3 [L]
+RewriteRule ^administration/imagec/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/images.php?categ=$1&page=$2&delete=$3 [L]
+
+    ##### VIDEOS #####
+### all videos, paging, delete
+RewriteRule ^administration/videos/([^/]*)/([^/]*)$ administration/videos.php?type=$1&timesort=$2 [L]
+RewriteRule ^administration/videos/page([^/]*)/delete/([^/]*)$ administration/videos.php?page=$1&delete=$2 [L]
+RewriteRule ^administration/videos/([^/]*)/([^/]*)/page([^/]*)$ administration/videos.php?type=$1&timesort=$2&page=$3 [L]
+RewriteRule ^administration/videos/([^/]*)/([^/]*)/([^/]*)$ administration/videos.php?type=$1&timesort=$2&id=$3 [L]
+RewriteRule ^administration/videos/([^/]*)/([^/]*)/delete/([^/]*)$ administration/videos.php?type=$1&timesort=$2&delete=$3 [L]
+RewriteRule ^administration/videos/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/videos.php?type=$1&timesort=$2&page=$3&id=$4 [L]
+RewriteRule ^administration/videos/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/videos.php?type=$1&timesort=$2&page=$3&delete=$4 [L]
+#### user videos, paging, delete
+RewriteRule ^administration/videou/([^/]*)/delete/([^/]*)$ administration/videos.php?user=$1&delete=$2 [L]
+RewriteRule ^administration/videou/([^/]*)/page([^/]*)$ administration/videos.php?user=$1&page=$2 [L]
+RewriteRule ^administration/videou/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ administration/videos.php?user=$1&type=$2&timesort=$3&page=$4 [L]
+RewriteRule ^administration/videou/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/videos.php?user=$1&page=$2&delete=$3 [L]
+RewriteRule ^administration/videou/([^/]*)/([^/]*)/([^/]*)$ administration/videos.php?user=$1&type=$2&timesort=$3 [L]
+RewriteRule ^administration/videou/([^/]*)/([^/]*)/([^/]*)/([^/]*)$ administration/videos.php?user=$1&type=$2&timesort=$3&id=$4 [L]
+RewriteRule ^administration/videou/([^/]*)/([^/]*)/([^/]*)/delete/([^/]*)$ administration/videos.php?user=$1&type=$2&timesort=$3&delete=$4 [L]
+RewriteRule ^administration/videou/([^/]*)/page([^/]*)/([^/]*)$ administration/videos.php?user=$1&page=$2&id=$3 [L]
+RewriteRule ^administration/videou/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/videos.php?user=$1&type=$2&timesort=$3&page=$4&delete=$5 [L]
+RewriteRule ^administration/videou/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/videos.php?user=$1&type=$2&timesort=$3&page=$4&id=$5 [L]
+#### category videos, paging, delete
+RewriteRule ^administration/videoc/([^/]*)/([^/]*)/([^/]*)/delete/([^/]*)$ administration/videos.php?categ=$1&type=$2&timesort=$3&delete=$4 [L]
+RewriteRule ^administration/videoc/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/videos.php?categ=$1&type=$2&timesort=$3&page=$4&delete=$5 [L]
+RewriteRule ^administration/videoc/([^/]*)/([^/]*)/([^/]*)/page([^/]*)/([^/]*)$ administration/videos.php?categ=$1&type=$2&timesort=$3&page=$4&id=$5 [L]    
+RewriteRule ^administration/videoc/([^/]*)/([^/]*)/([^/]*)/page([^/]*)$ administration/videos.php?categ=$1&type=$2&timesort=$3&page=$4 [L]
+RewriteRule ^administration/videoc/([^/]*)/([^/]*)/([^/]*)$ administration/videos.php?categ=$1&type=$2&timesort=$3 [L]
+RewriteRule ^administration/videoc/([^/]*)/([^/]*)/([^/]*)/([^/]*)$ administration/videos.php?categ=$1&type=$2&timesort=$3&id=$4 [L]
+RewriteRule ^administration/videoc/([^/]*)/page([^/]*)/([^/]*)$ administration/videos.php?categ=$1&page=$2&id=$3 [L]
+RewriteRule ^administration/videoc/([^/]*)/page([^/]*)/delete/([^/]*)$ administration/videos.php?categ=$1&page=$2&delete=$3 [L]
+
+    #### PLAYER ####
+#### Video Watermark
+RewriteRule ^administration/watermark/page([^/]*)$ administration/watermark_main.php?page=$1 [L]
+RewriteRule ^administration/watermark/saved$ administration/watermark_main.php?action=added [L]
+RewriteRule ^administration/watermark/delete/([^/]*)$ administration/watermark_main.php?action=delete&id=$1 [L]
+RewriteRule ^administration/watermark/([^/]*)/([^/]*)$ administration/watermark_edit.php?action=$1&id=$2 [L]
+RewriteRule ^administration/watermark/([^/]*)$ administration/watermark_edit.php?action=$1 [L]
+#### Audio Watermark
+RewriteRule ^administration/watermark_audio/page([^/]*)$ administration/watermark_main_audio.php?page=$1 [L]
+RewriteRule ^administration/watermark_audio/saved$ administration/watermark_main_audio.php?action=added [L]
+RewriteRule ^administration/watermark_audio/delete/([^/]*)$ administration/watermark_main_audio.php?action=delete&id=$1 [L]
+RewriteRule ^administration/watermark_audio/([^/]*)/([^/]*)$ administration/watermark_edit_audio.php?action=$1&id=$2 [L]
+RewriteRule ^administration/watermark_audio/([^/]*)$ administration/watermark_edit_audio.php?action=$1 [L]
+#### Video Ads
+RewriteRule ^administration/videoads/page([^/]*)$ administration/ads_manage.php?page=$1 [L]
+RewriteRule ^administration/videoads/saved$ administration/ads_manage.php?action=confirmation [L]
+RewriteRule ^administration/videoads/([^/]*)$ administration/ads_edit.php?action=$1 [L]
+RewriteRule ^administration/videoads/edit/([^/]*)$ administration/ads_edit.php?action=edit&id=$1 [L]
+RewriteRule ^administration/videoads/([^/]*)/([^/]*)$ administration/ads_manage.php?action=$1&id=$2 [L]
+#### Text Ads
+RewriteRule ^administration/textads/page([^/]*)$ administration/ads_manage2.php?page=$1 [L]
+RewriteRule ^administration/textads/saved$ administration/ads_manage2.php?action=confirmation [L]
+RewriteRule ^administration/textads/([^/]*)$ administration/ads_edit2.php?action=$1 [L]
+RewriteRule ^administration/textads/edit/([^/]*)$ administration/ads_edit2.php?action=edit&id=$1 [L]
+RewriteRule ^administration/textads/([^/]*)/([^/]*)$ administration/ads_manage2.php?action=$1&id=$2 [L]
+
+RewriteRule ^administration/player_main_audio administration/player_main_audio.php [L]
+RewriteRule ^administration/player_main administration/player_main.php [L]
+RewriteRule ^administration/player administration/player.php [L]
+RewriteRule ^administration/watermark_main_audio administration/watermark_main_audio.php [L]
+RewriteRule ^administration/watermark_main administration/watermark_main.php [L]
+RewriteRule ^administration/videoads administration/ads_manage.php [L]
+RewriteRule ^administration/textads administration/ads_manage2.php [L]
+
+    #### CATEGORIES ####
+RewriteRule ^administration/categories/add$ administration/categories.php?categ_add=true [L]
+RewriteRule ^administration/categories/saved$ administration/categories.php?msg=confirmation [L]
+RewriteRule ^administration/categories/page([^/]*)$ administration/categories.php?page=$1 [L]
+RewriteRule ^administration/categories/([^/]*)/([^/]*)$ administration/categories.php?action=$1&categ=$2 [L]
+RewriteRule ^administration/categories administration/categories.php [L]
+
+    #### MEMBERS: paging, details, enable/disable, delete, email ####
+RewriteRule ^administration/members/registered/page([^/]*)$ administration/members.php?page=$1 [L]
+RewriteRule ^administration/members/registered/([^/]*)/page([^/]*)$ administration/members.php?filter=$1&page=$2 [L]
+RewriteRule ^administration/members/registered/([^/]*)$ administration/members.php?filter=$1 [L]
+RewriteRule ^administration/members/registered administration/members.php [L]
+
+RewriteRule ^administration/members/banned/page([^/]*)$ administration/banned.php?page=$1 [L]
+RewriteRule ^administration/members/banned/ban/([^/]*)$ administration/banned.php?action=ban&member=$1 [L]
+RewriteRule ^administration/members/banned/unban/([^/]*)$ administration/banned.php?action=unban&member=$1 [L]
+RewriteRule ^administration/members/banned/delete/([^/]*)$ administration/banned.php?action=delete&member=$1 [L]
+RewriteRule ^administration/members/banned administration/banned.php [L]
+
+RewriteRule ^administration/members/requests/([^/]*)/page([^/]*)$ administration/memberrequests.php?rt=$1&page=$2 [L]
+RewriteRule ^administration/members/requests/([^/]*)$ administration/memberrequests.php?rt=$1 [L]
+RewriteRule ^administration/members/requests administration/memberrequests.php [L]
+
+
+RewriteRule ^administration/members/ban/([^/]*)$ administration/members.php?action=ban&member=$1 [L]
+RewriteRule ^administration/members/unban/([^/]*)$ administration/members.php?action=unban&member=$1 [L]
+RewriteRule ^administration/members/up0/([^/]*)$ administration/members.php?action=up0&member=$1 [L]
+RewriteRule ^administration/members/up1/([^/]*)$ administration/members.php?action=up1&member=$1 [L]
+RewriteRule ^administration/members/([^/]*)/disable$ administration/members.php?action=disable&member=$1 [L]
+RewriteRule ^administration/members/([^/]*)/enable$ administration/members.php?action=enable&member=$1 [L]
+RewriteRule ^administration/members/delete/([^/]*)$ administration/members.php?action=delete&member=$1 [L]
+RewriteRule ^administration/members/email/([^/]*)$ administration/members.php?action=email&to=$1 [L]    
+RewriteRule ^administration/members/message/([^/]*)$ administration/members.php?action=message&to=$1 [L]    
+RewriteRule ^administration/members/([^/]*)$ administration/memberdetails.php?user=$1 [L]
+
+    #### SETTINGS ####
+RewriteRule ^administration/settings/ads$ administration/adsettings.php?type=ads [L]
+RewriteRule ^administration/settings/guest$ administration/guestset.php?type=guest [L]
+RewriteRule ^administration/settings/languages$ administration/setlang.php?type=languages [L]
+RewriteRule ^administration/settings/templates$ administration/tplsettings.php?type=templates [L]
+RewriteRule ^administration/settings/system$ administration/setsys.php?type=system [L]
+RewriteRule ^administration/settings/templates/edit/([^/]*)$ administration/tplsettings.php?type=templates&edit=$1 [L]
+RewriteRule ^administration/settings/templates/enable/([^/]*)$ administration/tplsettings.php?type=templates&enable=$1 [L]
+RewriteRule ^administration/settings/templates/disable/([^/]*)$ administration/tplsettings.php?type=templates&disable=$1 [L]
+RewriteRule ^administration/settings/([^/]*)$ administration/settings.php?type=$1 [L]
+RewriteRule ^administration/settings/ads/edit/([^/]*)$ administration/adsettings.php?type=ads&edit=$1 [L]
+RewriteRule ^administration/settings/ads/enable/([^/]*)$ administration/adsettings.php?type=ads&enable=$1 [L]
+RewriteRule ^administration/settings/ads/disable/([^/]*)$ administration/adsettings.php?type=ads&disable=$1 [L]
+RewriteRule ^administration/settings/guest/delete/([^/]*)$ administration/guestset.php?type=guest&delete=$1 [L]
+RewriteRule ^administration/settings/guest/page([^/]*)$ administration/guestset.php?type=guest&page=$1 [L]
+RewriteRule ^administration/settings/guest/reset/([^/]*)$ administration/guestset.php?type=guest&reset=$1 [L]
+RewriteRule ^administration/settings/languages/add$ administration/setlang.php?type=languages&action=add [L]
+RewriteRule ^administration/settings/languages/saved$ administration/setlang.php?type=languages&action=saved [L]
+RewriteRule ^administration/settings/languages/deleted$ administration/setlang.php?type=languages&action=deleted [L]
+RewriteRule ^administration/settings/languages/delete/([^/]*)$ administration/setlang.php?type=languages&delete=$1 [L]
+RewriteRule ^administration/settings/languages/page([^/]*)$ administration/setlang.php?type=languages&page=$1 [L]
+RewriteRule ^administration/settings/languages/edit/([^/]*)$ administration/setlang.php?type=languages&edit=$1 [L]
+RewriteRule ^administration/settings/languages/enable/([^/]*)$ administration/setlang.php?type=languages&enable=$1 [L]
+RewriteRule ^administration/settings/languages/disable/([^/]*)$ administration/setlang.php?type=languages&disable=$1 [L]
+RewriteRule ^administration/settings/([^/]*)/edit/([^/]*)$ administration/settings.php?type=$1&edit=$2 [L]
+RewriteRule ^administration/settings/([^/]*)/enable/([^/]*)$ administration/settings.php?type=$1&enable=$2 [L]
+RewriteRule ^administration/settings/([^/]*)/disable/([^/]*)$ administration/settings.php?type=$1&disable=$2 [L]
+
+    #### ADMIN SEARCH: paging, sorting ####
+RewriteRule ^administration/search/audios/([^/]*)$ administration/search.php?searcha=$1 [L]    
+RewriteRule ^administration/search/audios/([^/]*)/page([^/]*)$ administration/search.php?searcha=$1&page=$2 [L]
+RewriteRule ^administration/search/audios/([^/]*)/([^/]*)$ administration/search.php?searcha=$1&filter=$2 [L]
+RewriteRule ^administration/search/audios/([^/]*)/([^/]*)/page([^/]*)$ administration/search.php?searcha=$1&filter=$2&page=$3 [L]
+RewriteRule ^administration/search/images/([^/]*)$ administration/search.php?searchi=$1 [L]
+RewriteRule ^administration/search/images/([^/]*)/page([^/]*)$ administration/search.php?searchi=$1&page=$2 [L]
+RewriteRule ^administration/search/images/([^/]*)/([^/]*)$ administration/search.php?searchi=$1&filter=$2 [L]
+RewriteRule ^administration/search/images/([^/]*)/([^/]*)/page([^/]*)$ administration/search.php?searchi=$1&filter=$2&page=$3 [L]
+RewriteRule ^administration/search/videos/([^/]*)$ administration/search.php?searchv=$1 [L]
+RewriteRule ^administration/search/videos/([^/]*)/page([^/]*)$ administration/search.php?searchv=$1&page=$2 [L]
+RewriteRule ^administration/search/videos/([^/]*)/([^/]*)$ administration/search.php?searchv=$1&filter=$2 [L]
+RewriteRule ^administration/search/videos/([^/]*)/([^/]*)/page([^/]*)$ administration/search.php?searchv=$1&filter=$2&page=$3 [L]
+RewriteRule ^administration/search/members/([^/]*)$ administration/search.php?searchm=$1 [L]
+RewriteRule ^administration/search/members/([^/]*)/page([^/]*)$ administration/search.php?searchm=$1&page=$2 [L]
+RewriteRule ^administration/search/members/([^/]*)/([^/]*)$ administration/search.php?searchm=$1&filter=$2 [L]
+RewriteRule ^administration/search/members/([^/]*)/([^/]*)/page([^/]*)$ administration/search.php?searchm=$1&filter=$2&page=$3 [L]
+RewriteRule ^administration/search/channels/([^/]*)$ administration/search.php?searchm=$1 [L]
+RewriteRule ^administration/search/channels/([^/]*)/page([^/]*)$ administration/search.php?searchm=$1&page=$2 [L]
+RewriteRule ^administration/search/channels/([^/]*)/([^/]*)$ administration/search.php?searchm=$1&filter=$2 [L]
+RewriteRule ^administration/search/channels/([^/]*)/([^/]*)/page([^/]*)$ administration/search.php?searchm=$1&filter=$2&page=$3 [L]
+RewriteRule ^administration/search/tags/([^/]*)$ administration/search.php?searcht=$1 [L]
+RewriteRule ^administration/search/tags/([^/]*)/page([^/]*)$ administration/search.php?searcht=$1&page=$2 [L]
+RewriteRule ^administration/search/tags/([^/]*)/([^/]*)$ administration/search.php?searcht=$1&filter=$2 [L]
+RewriteRule ^administration/search/tags/([^/]*)/([^/]*)/page([^/]*)$ administration/search.php?searcht=$1&filter=$2&page=$3 [L]
+RewriteRule ^administration/search/all/([^/]*)$ administration/search.php?searchall=$1 [L]
+RewriteRule ^administration/search/all/([^/]*)/page([^/]*)$ administration/search.php?searchall=$1&page=$2 [L]
+RewriteRule ^administration/search/all/([^/]*)/([^/]*)$ administration/search.php?searchall=$1&filter=$2 [L]
+RewriteRule ^administration/search/all/([^/]*)/([^/]*)/page([^/]*)$ administration/search.php?searchall=$1&filter=$2&page=$3 [L]
+RewriteRule ^administration/search administration/search.php [L]
+
+RewriteRule ^administration/logout administration/logout.php [L]
+RewriteRule ^administration/main administration/index.php [L]
+RewriteRule ^captcha$ modules/signup/image_security.php [L]
+#RewriteRule ^([^/]*)$ modules/channels/userpage.php?user=$1 [L]    

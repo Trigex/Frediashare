@@ -1,0 +1,14 @@
+.pass_meter_0 {width:1%;background-color:#CC0000;}
+.pass_meter_10 {width:10%;background-color:#CC0000;}
+.pass_meter_20 {width:20%;background-color:#FF6600;}
+.pass_meter_30 {width:30%;background-color:#FF6600;}
+.pass_meter_40 {width:40%;background-color:#FF6600;}
+.pass_meter_50 {width:50%;background-color:#00CC00;}
+.pass_meter_60 {width:60%;background-color:#00CC00;}
+.pass_meter_70 {width:70%;background-color:#006600;}
+.pass_meter_80 {width:80%;background-color:#006600;}
+.pass_meter_90 {width:90%;background-color:#003399;}
+.pass_meter_100 {width:100%;background-color:#003399;}
+
+.pass_meter_base, .pass_meter_base {float:left;height:20px;text-align:left;}
+.pass_meter {background-color:#efefef;width:169px;height:20px;border:1px solid black;margin:0;padding:0;}

@@ -1,0 +1,16 @@
+    {if $sbtn eq "alla"}
+	<td class=""><h1>{if $smarty.request.user eq ""}{$adm_audiosheading1}<span class="f12">{if $smarty.request.categ ne ""}{$thgtsigns}{$adm_filesin}{php}global $smarty; $rid = ereg_replace("_{1,}", " ", $_REQUEST[categ]); $smarty->assign('rid',$rid); {/php}{$cname}{/if}{else}{if $smarty.request.req eq ""}{insert name=uid_to_names assign=uname uid=$smarty.request.user}{$uname}{$adm_audiosuser}{else}{/if}{/if}{$thgtsigns}{insert name=thsortdate assign=myfrom ts=$smarty.request.timesort}{$myfrom}{$thgtsigns}{insert name=thsortfilters assign=myflt ts=$smarty.request.type}{$myflt}</span></h1></td>
+        <td class="" align=right>{if $total ne "0"}{$adm_audiosnr} [{$start_num}-{$end_num}] {$adm_filesof} [{$total}]{/if}</td>
+    {elseif $sbtn eq "alli"}
+	<td class=""><h1>{if $smarty.request.user eq ""}{$adm_imagesheading1}<span class="f12">{if $smarty.request.categ ne ""}{$thgtsigns}{$adm_filesin}{php}global $smarty; $rid = ereg_replace("_{1,}", " ", $_REQUEST[categ]); $smarty->assign('rid',$rid); {/php}{$cname}{/if}{else}{if $smarty.request.req eq ""}{insert name=uid_to_names assign=uname uid=$smarty.request.user}{$uname}{$adm_imagesuser}{else}{/if}{/if}{$thgtsigns}{insert name=thsortdate assign=myfrom ts=$smarty.request.timesort}{$myfrom}{$thgtsigns}{insert name=thsortfilters assign=myflt ts=$smarty.request.type}{$myflt}</span></h1></td>
+        <td class="" align=right>{if $total ne "0"}{$adm_imagesnr} [{$start_num}-{$end_num}] {$adm_filesof} [{$total}]{/if}</td>
+    {elseif $sbtn eq "allv"}
+	<td class=""><h1>{if $smarty.request.user eq ""}{$adm_videosheading1}<span class="f12">{if $smarty.request.categ ne ""}{$thgtsigns}{$adm_filesin}{php}global $smarty; $rid = ereg_replace("_{1,}", " ", $_REQUEST[categ]); $smarty->assign('rid',$rid); {/php}{$cname}{/if}{else}{if $smarty.request.req eq ""}{insert name=uid_to_names assign=uname uid=$smarty.request.user}{$uname}{$adm_videosuser}{else}{/if}{/if}{$thgtsigns}{insert name=thsortdate assign=myfrom ts=$smarty.request.timesort}{$myfrom}{$thgtsigns}{insert name=thsortfilters assign=myflt ts=$smarty.request.type}{$myflt}</span></h1></td>
+        <td class="" align=right>{if $total ne "0"}{$adm_videosnr} [{$start_num}-{$end_num}] {$adm_filesof} [{$total}]{/if}</td>
+    {elseif $sbtn eq "adm_areq" or $sbtn eq "adm_ireq" or $sbtn eq "adm_vreq"}
+	<td class=""><h1>{if $smarty.request.type eq "audio"}{$adm_reqaudio}{elseif $smarty.request.type eq "image"}{$adm_reqimage}{elseif $smarty.request.type eq "video"}{$adm_reqvideo}{/if}{if $smarty.request.show eq "featured"}{$adm_reqfeature}{elseif $smarty.request.show eq "inappropriate"}{$adm_reqinapp}{/if}</h1></td>
+        <td class="" align=right>{if $total ne "0"}{$adm_reqnr} [{$start_num}-{$end_num}]{$adm_reqof}[{$total}]{/if}</td>
+    {elseif $btn eq "adm_members"}
+	<td class=""><h1>{$adm_membanheading}</h1></td>
+        <td class="" align=right>{if $total ne "0"}{$adm_membannr}[{$start_num}-{$end_num}]{$adm_membanof}[{$total}]{/if}</td>
+    {/if}
